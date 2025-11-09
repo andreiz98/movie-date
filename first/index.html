@@ -75,9 +75,9 @@
 		}
   </style>
 </head>
-<body>
-    <div class="card">
-        <h2>🎞️ Our Movie Date</h2>
+<body style="cursor:pointer;">
+  <div class="card" id="card">
+    <h2 id="movie-title" style="opacity:0; transition: opacity 1s;">🎞️ Our Movie Date</h2>
 
         <p>Scene 1: You say yes.</p>
         <p>Scene 2: We go on a date 🍝</p>
@@ -94,12 +94,14 @@
 	</audio>
 
 	<div id="tap-overlay" style="
+    display:none;
     position:fixed; top:0; left:0; width:100%; height:100%;
-    z-index:10; cursor:pointer;
+    z-index:10; cursor:pointer; background:rgba(255,255,255,0);
   	"></div>
 
   <script>
     const audio = document.getElementById('bg-music');
+    const movieTitle = document.getElementById('movie-title');
     const overlay = document.getElementById('tap-overlay');
 
     function fadeInMusic(targetVolume = 0.2, step = 0.02, interval = 300) {
@@ -113,22 +115,26 @@
       }, interval);
     }
 
-    function tryAutoPlay() {
+    function startMusic() {
       audio.play().then(() => {
         fadeInMusic();
+        movieTitle.style.opacity = 1; // reveal title
         overlay.style.display = 'none';
       }).catch(() => {
+        // Mobile autoplay blocked: show overlay for user tap
         overlay.style.display = 'block';
       });
     }
 
-    overlay.addEventListener('click', () => {
-      audio.play().then(() => fadeInMusic());
-      overlay.style.display = 'none';
-    });
+    // Try autoplay immediately
+    startMusic();
 
-    tryAutoPlay();
+    // Mobile fallback: user tap triggers music
+    overlay.addEventListener('click', () => {
+      startMusic();
+    });
   </script>
 	
 </body>
 </html>
+
