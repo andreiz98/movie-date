@@ -30,10 +30,10 @@
 		}
 
 		h2 { animation-delay: 0.2s; }
-		  p:nth-of-type(1) { animation-delay: 1s; }
-		  p:nth-of-type(2) { animation-delay: 2s; }
-		  p:nth-of-type(3) { animation-delay: 3s; }
-		  p:nth-of-type(4) { animation-delay: 4s; }
+		p:nth-of-type(1) { animation-delay: 1s; }
+		p:nth-of-type(2) { animation-delay: 2s; }
+		p:nth-of-type(3) { animation-delay: 3s; }
+		p:nth-of-type(4) { animation-delay: 4s; }
 		  
 		@keyframes slideUp {
 		  0% { opacity: 0; transform: translateY(50px); }
@@ -74,10 +74,25 @@
 		}
   </style>
 </head>
-<body>
-  <div class="card">
-    <h2>🎞️ Our Movie Date — The Sequel</h2>
+<body style="cursor:pointer;">
 
+	<div id="click-to-play" style="
+	    position:fixed;
+	    top:0; left:0;
+	    width:100%; height:100%;
+	    display:flex;
+	    align-items:center;
+	    justify-content:center;
+	    background:rgba(255,255,255,0.9);
+	    font-size:24px;
+	    cursor:pointer;
+	    z-index:10;
+		">
+	    <h2>🎞️ Let't Continue The Story...</h2>
+ 	</div>
+	
+  <div class="card" id="card" style="display:none; opacity:0; transition: opacity 1s;">
+    
     <p>Scene 4: You said yes — now there’s no turning back! 🚀</p>
     <p>Scene 5: Prepare for Mission: Possible — Operation Date Night. 🍿💥</p>
     <p>Scene 6: Romance, chaos, and maybe dessert. 🍰❤️</p>
@@ -87,23 +102,36 @@
     <div class="footer">— A production by Us 💘</div>
   </div>
 
-  <audio autoplay loop id="bg-music">
+  <audio id="bg-music" loop>
 	  <source src="https://andreiz98.github.io/myRepo/music1.mp3" type="audio/mpeg">
-	  Your browser does not support the audio element.
-	</audio>
+  </audio>
 
 	<script>
-	  const audio = document.getElementById('bg-music');
-	  audio.volume = 0;
+    const clickOverlay = document.getElementById('click-to-play');
+    const card = document.getElementById('card');
+    const audio = document.getElementById('bg-music');
 
-	  const fadeIn = setInterval(() => {
-		if (audio.volume < 0.2) {
-		  audio.volume = Math.min(audio.volume + 0.02, 0.2);
-		} else {
-		  clearInterval(fadeIn);
-		}
-	  }, 300);
-	</script>
+    function fadeInMusic(targetVolume = 0.2, step = 0.02, interval = 300) {
+      audio.volume = 0;
+      const fade = setInterval(() => {
+        if (audio.volume < targetVolume) {
+          audio.volume = Math.min(audio.volume + step, targetVolume);
+        } else {
+          clearInterval(fade);
+        }
+      }, interval);
+    }
+
+    clickOverlay.addEventListener('click', () => {
+      clickOverlay.style.display = 'none';
+      card.style.display = 'block';
+      setTimeout(() => {
+        card.style.opacity = 1;
+      }, 50);
+      audio.play().then(() => fadeInMusic())
+           .catch(() => console.log("Autoplay blocked, user interaction needed"));
+    });
+  </script>
 
 </body>
 </html>
