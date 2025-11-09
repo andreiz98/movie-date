@@ -130,7 +130,10 @@
 
     clickOverlay.addEventListener('click', () => {
       clickOverlay.style.display = 'none';
-      card.style.opacity = 1;
+      card.style.display = 'block';
+      setTimeout(() => {
+        card.style.opacity = 1;
+      }, 50);
       audio.play().then(() => fadeInMusic())
            .catch(() => console.log("Autoplay blocked, user interaction needed"));
     });
@@ -138,5 +141,6 @@
 	
 </body>
 </html>
+
 
 
