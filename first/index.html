@@ -76,9 +76,23 @@
   </style>
 </head>
 <body style="cursor:pointer;">
-  <div class="card" id="card">
-    <h2 id="movie-title" style="opacity:0; transition: opacity 1s;">🎞️ Our Movie Date</h2>
 
+   <div id="click-to-play" style="
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:rgba(255,255,255,0.9);
+    font-size:24px;
+    cursor:pointer;
+    z-index:10;
+	">
+    <h2>🎞️ How Our Movie Begin...</h2>
+  </div>
+
+  <div class="card" id="card">
         <p>Scene 1: You say yes.</p>
         <p>Scene 2: We go on a date 🍝</p>
 		<p>Scene 3: Credits roll — “Best Couple Ever” 🎬❤️</p>
@@ -89,7 +103,7 @@
         <div class="footer">— Written, directed, and starring: Us 💕</div>
     </div>
 	
-	<audio autoplay loop id="bg-music">
+	<audio id="bg-music" loop>
 	  <source src="https://andreiz98.github.io/myRepo/music.mp3" type="audio/mpeg">
 	</audio>
 
@@ -100,9 +114,9 @@
   	"></div>
 
   <script>
+    const clickOverlay = document.getElementById('click-to-play');
+    const card = document.getElementById('card');
     const audio = document.getElementById('bg-music');
-    const movieTitle = document.getElementById('movie-title');
-    const overlay = document.getElementById('tap-overlay');
 
     function fadeInMusic(targetVolume = 0.2, step = 0.02, interval = 300) {
       audio.volume = 0;
@@ -115,29 +129,11 @@
       }, interval);
     }
 
-    function startMusic() {
-      audio.play().then(() => {
-        fadeInMusic();
-        movieTitle.style.opacity = 1;
-        overlay.style.display = 'none';
-      }).catch(() => {
-        overlay.style.display = 'block';
-      });
-    }
-	  
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          startMusic();
-          observer.unobserve(movieTitle);
-        }
-      });
-    }, { threshold: 0 }); // trigger at first pixel
-
-    observer.observe(movieTitle);
-
-    overlay.addEventListener('click', () => {
-      startMusic();
+    clickOverlay.addEventListener('click', () => {
+      clickOverlay.style.display = 'none';
+      card.style.opacity = 1;
+      audio.play().then(() => fadeInMusic())
+           .catch(() => console.log("Autoplay blocked, user interaction needed"));
     });
   </script>
 	
