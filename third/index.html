@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Movie Date 🎬❤️</title>
+     <style>
+		body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            font-family: 'Segoe UI', sans-serif;
+            text-align: center;
+            color: #222;
+            padding: 40px 20px;
+		}
+		
+		.card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+            padding: 30px;
+            max-width: 450px;
+            margin: auto;
+            animation: fadeIn 1.5s ease-in-out;
+			text-shadow: 1px 1px 2px rgba(255,255,255,0.5);
+        }
+
+		h2, p {
+		  opacity: 0;
+		  transform: translateY(50px);
+		  animation: slideUp 1s ease forwards;
+		}
+
+		h2 { animation-delay: 0.2s; }
+		p:nth-of-type(1) { animation-delay: 1s; }
+		p:nth-of-type(2) { animation-delay: 4s; }
+		p:nth-of-type(3) { animation-delay: 7s; }
+		p:nth-of-type(4) { animation-delay: 10s; }
+		  
+		@keyframes slideUp {
+		  0% { opacity: 0; transform: translateY(50px); }
+		  100% { opacity: 1; transform: translateY(0); }
+		}
+
+		img {
+		  margin-top: 20px;
+		  border-radius: 15px;
+		  width: 250px;
+		  opacity: 0;
+		  transform: scale(0.9);
+		  animation: fadeIn 1s ease forwards;
+		  animation-delay: 13s;
+		}
+		
+		.footer {
+			opacity: 0;
+			transform: translateY(50px);
+			animation: slideUp 1s ease forwards;
+			animation-delay: 16s;  /* show after image */
+			font-style: italic;
+			margin-top: 30px;
+		}
+
+		@keyframes fadeIn {
+		  to { opacity: 1; transform: scale(1); }
+		}
+
+		#tap {
+		  margin-top: 40px;
+		  opacity: 0;
+		  animation: fadeIn 1s ease forwards;
+		  animation-delay: 3.5s;
+		  cursor: pointer;
+		  font-size: 18px;
+		  color: #ff4081;
+		}
+		
+		#slideshow {
+			position: relative;
+			width: 100%;
+			height: 250px;
+			overflow: hidden;
+			border-radius: 12px;
+			margin-bottom: 15px;
+		}
+
+		.slide {
+			position: absolute;
+			width: 100%;
+			height: 100%;
+			object-fit: cover;
+			opacity: 0;
+			transform: translateX(50px);
+			transition: opacity 1.5s ease, transform 1.5s ease;
+		  }
+		#click-to-play {
+			position: fixed;
+			top: 0; left: 0;
+			width: 100%; height: 100%;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: rgba(255,255,255,0.9);
+			font-size: 24px;
+			cursor: pointer;
+			z-index: 10;
+			transition: opacity 1s ease;
+		  }
+  </style>
+</head>
+<body style="cursor:pointer;">
+
+   <div id="click-to-play">
+    <h2>🎞️ And The Movie End's With...Me</h2>
+  </div>
+
+  <div class="card" id="card">
+        <p>🎞️ The story continues...</p>
+		<p>❤️ Two hearts became three.</p>
+		<p>👶 Our happily ever after — in tiny footsteps.</p>
+
+        <div id="slideshow"></div>
+    </div>
+	
+	<audio id="bg-music" loop>
+		<source src="https://andreiz98.github.io/myRepo/music2.mp3" type="audio/mpeg">
+	</audio>
+
+  <script>
+    const clickOverlay = document.getElementById('click-to-play');
+    const card = document.getElementById('card');
+    const audio = document.getElementById('bg-music');
+	const slideshow = document.getElementById('slideshow');
+	const imageUrls = [
+      "https://andreiz98.github.io/myRepo/third/1.jpg",
+      "https://andreiz98.github.io/myRepo/third/2.jpg",
+      "https://andreiz98.github.io/myRepo/third/3.jpg",
+      "https://andreiz98.github.io/myRepo/third/4.jpg",
+      "https://andreiz98.github.io/myRepo/third/5.jpg",
+      "https://andreiz98.github.io/myRepo/third/6.jpg",
+      "https://andreiz98.github.io/myRepo/third/7.jpg",
+      "https://andreiz98.github.io/myRepo/third/8.jpg",
+    ];
+
+    for (let i = 0; i < imageUrls.length; i++) {
+    const img = document.createElement('img');
+    img.src = imageUrls[i];
+    img.className = 'slide';
+    if (i === 0) {
+      img.style.opacity = 1;
+      img.style.transform = 'translateX(0)';
+    }
+    slideshow.appendChild(img);
+  }
+
+  const slides = document.querySelectorAll('#slideshow .slide');
+  let currentSlide = 0;
+
+  function nextSlide() {
+    const next = (currentSlide + 1) % slides.length;
+    slides[currentSlide].style.opacity = 0;
+    slides[currentSlide].style.transform = "translateX(-50px)";
+    slides[next].style.opacity = 1;
+    slides[next].style.transform = "translateX(0)";
+    currentSlide = next;
+  }
+
+    function fadeInMusic(targetVolume = 0.2, step = 0.02, interval = 300) {
+      audio.volume = 0;
+      const fade = setInterval(() => {
+        if (audio.volume < targetVolume) {
+          audio.volume = Math.min(audio.volume + step, targetVolume);
+        } else {
+          clearInterval(fade);
+        }
+      }, interval);
+    }
+
+    // Only start music on click
+    clickOverlay.addEventListener('click', () => {
+      clickOverlay.style.display = 'none';
+      card.style.display = 'block';
+      setTimeout(() => {
+        card.style.opacity = 1;
+      }, 50);
+      audio.play().then(() => fadeInMusic())
+           .catch(() => console.log("Autoplay blocked, user interaction needed"));
+	  setTimeout(() => {
+      audio.pause();
+      audio.currentTime = 0; // optional: restart at beginning
+		}, 45000);
+    });
+	
+	const slides = document.querySelectorAll('#slideshow .slide');
+    let currentSlide = 0;
+
+    setInterval(() => {
+      slides[currentSlide].style.opacity = 0;
+      currentSlide = (currentSlide + 1) % slides.length;
+      slides[currentSlide].style.opacity = 1;
+    }, 3000); // change every 3 seconds
+  </script>
+	
+</body>
+</html>
